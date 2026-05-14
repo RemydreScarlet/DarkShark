@@ -2,7 +2,7 @@
 
 ## Phase 1: Infrastructure
 - [x] Project Initialization
-- [ ] Signaling Server (Basic)
+- [x] Signaling Server (Basic)
 - [ ] WebRTC Transport Layer
 
 ## Phase 2: Expert Node

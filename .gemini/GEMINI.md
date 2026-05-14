@@ -11,7 +11,7 @@
        → Product of Experts 統合 → サンプリング → 次ラウンド
 ```
 
-- **ベースモデル**: Qwen2.5-0.5B（全ノード同一ONNXチェックポイント）
+- **ベースモデル**: Qwen3.5-2B（全ノード同一ONNXチェックポイント）
 - **LoRA**: オフラインで `merge_and_unload()` → ONNX変換済み。Attention含む全層に適用
 - **通信**: WebRTC DataChannel。KVキャッシュ + logitsをArrayBufferで転送
 - **シグナリング**: Node.js + ws（最小構成）
@@ -90,6 +90,9 @@ python scripts/convert_lora.py --model ./lora_model --output ./public/models/exp
 - WebRTC メッセージは `ArrayBuffer` で送受信（JSON禁止、帯域節約）
 - 非同期処理は `async/await` で統一（`.then()` チェーン禁止）
 - ファイル名: `kebab-case`、クラス名: `PascalCase`、変数/関数: `camelCase`
+
+### やるべきこと
+- テスト駆動型開発
 
 ### やってはいけないこと
 
