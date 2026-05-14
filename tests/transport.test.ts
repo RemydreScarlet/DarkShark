@@ -30,6 +30,7 @@ describe('Transport Serialization', () => {
     // Float32Array might be decoded as a regular Array or Buffer depending on MessagePack config,
     // but the data integrity should be maintained.
     expect(decoded.type).toBe('kv_sync');
-    expect(Object.values(decoded.payload.data).length).toBe(1000);
+    // Float32 contains 4 bytes each, so 1000 elements * 4 bytes/element = 4000 bytes.
+    expect(decoded.payload.data.byteLength).toBe(4000);
   });
 });
