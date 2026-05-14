@@ -1,0 +1,27 @@
+{
+  "name": "darkshark",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "signaling": "tsx src/signaling/server.ts"
+  },
+  "dependencies": {
+    "@xenova/transformers": "^2.17.2",
+    "@msgpack/msgpack": "^3.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11",
+    "vite-plugin-top-level-await": "^1.4.1",
+    "vitest": "^1.6.0",
+    "tsx": "^4.10.2"
+  }
+}
