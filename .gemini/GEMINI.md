@@ -93,6 +93,7 @@ python scripts/convert_lora.py --model ./lora_model --output ./public/models/exp
 
 ### やるべきこと
 - テスト駆動型開発
+- モジュラー設計
 
 ### やってはいけないこと
 
