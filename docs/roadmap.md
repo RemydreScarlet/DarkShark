@@ -3,7 +3,7 @@
 ## Phase 1: Infrastructure
 - [x] Project Initialization
 - [x] Signaling Server (Basic)
-- [ ] WebRTC Transport Layer
+- [x] WebRTC Transport Layer
 
 ## Phase 2: Expert Node
 - [ ] Transformers.js Integration
