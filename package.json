@@ -12,16 +12,16 @@
     "signaling": "tsx src/signaling/server.ts"
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.0.0",
+    "@mlc-ai/web-llm": "^0.2.73",
     "@msgpack/msgpack": "^3.0.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.10",
+    "tsx": "^4.10.2",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vite-plugin-top-level-await": "^1.4.1",
-    "vitest": "^1.6.0",
-    "tsx": "^4.10.2"
+    "vitest": "^1.6.0"
   }
 }
