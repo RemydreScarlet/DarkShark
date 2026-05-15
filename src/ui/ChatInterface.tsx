@@ -26,11 +26,26 @@ export const ChatInterface = () => {
     setInput('');
     setLoading(true);
 
+    // Placeholder for streaming assistant response
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
     try {
-      const response = await localInference(input);
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      await localInference(input, (token) => {
+        console.log('Received token in UI:', token);
+        setMessages(prev => {
+          const newMessages = [...prev];
+          const lastIndex = newMessages.length - 1;
+          if (newMessages[lastIndex].role === 'assistant') {
+            newMessages[lastIndex] = { 
+              ...newMessages[lastIndex], 
+              content: newMessages[lastIndex].content + token 
+            };
+          }
+          return newMessages;
+        });
+      });
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Error during inference.' }]);
+      setMessages(prev => [...prev.slice(0, -1), { role: 'assistant', content: 'Error during inference.' }]);
     } finally {
       setLoading(false);
     }

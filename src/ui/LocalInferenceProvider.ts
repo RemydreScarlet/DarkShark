@@ -19,17 +19,29 @@ export const initializeInference = async (onProgress: (progress: number) => void
   onProgress(1.0);
 };
 
-export const localInference = async (input: string): Promise<string> => {
+export const localInference = async (
+  input: string,
+  onToken: (token: string) => void
+): Promise<string> => {
   if (!generator) {
     throw new Error("Generator not initialized");
   }
 
   chatHistory.push({ role: 'user', content: input });
 
+  const streamer = new TextStreamer(generator.tokenizer, {
+    skip_prompt: true,
+    callback_function: (token: string) => {
+      console.log('Streaming token:', token);
+      onToken(token);
+    },
+  });
+
   const output = await generator(chatHistory, {
     max_new_tokens: 128,
     temperature: 0.7,
     do_sample: true,
+    streamer,
   });
 
   const response = output[0].generated_text.at(-1).content;
