@@ -1,6 +1,6 @@
 import { encode as mpEncode, decode as mpDecode } from '@msgpack/msgpack';
 
-export type MessageType = 'inference_request' | 'inference_response' | 'kv_sync';
+export type MessageType = 'inference_request' | 'inference_response' | 'kv_sync' | 'expert_message';
 
 export interface TransportMessage {
   type: MessageType;

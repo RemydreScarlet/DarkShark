@@ -1,6 +1,6 @@
 import { ExpertNode } from './node';
 import { ExpertTask, ExpertMessage } from './types';
-import { SignalingClient } from '../signaling/server';
+import { SignalingClient } from '../transport/signaling';
 
 export class ExpertOrchestrator extends ExpertNode {
   private tasks: Map<string, ExpertTask> = new Map();

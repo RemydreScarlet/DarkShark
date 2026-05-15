@@ -1,4 +1,4 @@
-import { SignalingClient } from '../signaling/server';
+import { SignalingClient } from '../transport/signaling';
 import { createPeerConnection, PeerConnection } from '../transport/webrtc';
 import { ExpertMetadata, ExpertMessage } from './types';
 import { createMetadata } from './metadata';
@@ -7,11 +7,10 @@ import { TransportMessage } from '../transport/types';
 export class ExpertNode {
   private peers: Map<string, PeerConnection> = new Map();
   public metadata: ExpertMetadata;
-
   constructor(
     private nodeId: string,
     private role: 'orchestrator' | 'worker' | 'observer',
-    private signaling: SignalingClient,
+    protected signaling: SignalingClient,
     capabilities: string[] = []
   ) {
     this.metadata = createMetadata(nodeId, role, capabilities);
@@ -37,22 +36,26 @@ export class ExpertNode {
   async sendToPeer(targetId: string, message: ExpertMessage) {
     const peer = this.peers.get(targetId);
     if (peer) {
-      peer.send({ type: 'expert_message', payload: message });
+      peer.send({ type: 'expert_message', payload: message, timestamp: Date.now() });
     } else {
       console.warn(`Peer ${targetId} not found`);
     }
   }
 
   async broadcast(message: ExpertMessage) {
-    for (const [id, peer] of this.peers) {
-      peer.send({ type: 'expert_message', payload: message });
+    for (const [_id, peer] of this.peers) {
+      peer.send({ type: 'expert_message', payload: message, timestamp: Date.now() });
     }
   }
 
   async disconnect() {
     for (const [id, peer] of this.peers) {
+      console.log(`Disconnecting from ${id}`);
       peer.close();
     }
     this.peers.clear();
   }
+
+  get getNodeId() { return this.nodeId; }
+  get getRole() { return this.role; }
 }

@@ -12,8 +12,12 @@
     "signaling": "tsx src/signaling/server.ts"
   },
   "dependencies": {
-    "@mlc-ai/web-llm": "^0.2.73",
+    "@huggingface/transformers": "^4.0.0-next.11",
     "@msgpack/msgpack": "^3.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "ws": "^8.18.0"
   },
   "devDependencies": {

@@ -88,7 +88,7 @@ export async function createPeerConnection(
     dc: dataChannel,
     send: (msg) => {
       if (dataChannel && dataChannel.readyState === 'open') {
-        dataChannel.send(encode(msg));
+        dataChannel.send(encode(msg) as any);
       } else {
         console.warn(`Cannot send message to ${targetId}, DataChannel not open (state: ${currentStatus})`);
       }
