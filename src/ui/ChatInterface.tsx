@@ -1,7 +1,20 @@
-import { useState, KeyboardEvent, useEffect, useRef } from 'react';
+import { useState, KeyboardEvent, useEffect, useRef, memo } from 'react';
 import { localInference, initializeInference } from './LocalInferenceProvider';
 
 type Message = { role: 'user' | 'assistant'; content: string };
+
+const MessageItem = memo(({ msg }: { msg: Message }) => (
+  <div style={{ 
+    alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
+    padding: '10px 15px',
+    borderRadius: '15px',
+    maxWidth: '70%',
+    backgroundColor: msg.role === 'user' ? '#007bff' : '#f1f1f1',
+    color: msg.role === 'user' ? '#fff' : '#000'
+  }}>
+    {msg.content}
+  </div>
+));
 
 export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -18,6 +31,9 @@ export const ChatInterface = () => {
     initializeInference((p) => setInitProgress(p)).then(() => setInitProgress(1));
   }, []);
 
+  const streamBuffer = useRef('');
+  const requestRef = useRef<number | null>(null);
+
   const handleSend = async () => {
     if (!input.trim() || initProgress !== 1) return;
 
@@ -25,24 +41,30 @@ export const ChatInterface = () => {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setLoading(true);
+    streamBuffer.current = '';
 
     // Placeholder for streaming assistant response
     setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
     try {
       await localInference(input, (token) => {
-        console.log('Received token in UI:', token);
-        setMessages(prev => {
-          const newMessages = [...prev];
-          const lastIndex = newMessages.length - 1;
-          if (newMessages[lastIndex].role === 'assistant') {
-            newMessages[lastIndex] = { 
-              ...newMessages[lastIndex], 
-              content: newMessages[lastIndex].content + token 
-            };
-          }
-          return newMessages;
-        });
+        streamBuffer.current += token;
+        if (!requestRef.current) {
+          requestRef.current = requestAnimationFrame(() => {
+            setMessages(prev => {
+              const newMessages = [...prev];
+              const lastIndex = newMessages.length - 1;
+              if (newMessages[lastIndex]?.role === 'assistant') {
+                newMessages[lastIndex] = { 
+                  ...newMessages[lastIndex], 
+                  content: streamBuffer.current
+                };
+              }
+              return newMessages;
+            });
+            requestRef.current = null;
+          });
+        }
       });
     } catch (e) {
       setMessages(prev => [...prev.slice(0, -1), { role: 'assistant', content: 'Error during inference.' }]);
@@ -60,16 +82,7 @@ export const ChatInterface = () => {
       )}
       <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
         {messages.map((msg, i) => (
-          <div key={i} style={{ 
-            alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-            padding: '10px 15px',
-            borderRadius: '15px',
-            maxWidth: '70%',
-            backgroundColor: msg.role === 'user' ? '#007bff' : '#f1f1f1',
-            color: msg.role === 'user' ? '#fff' : '#000'
-          }}>
-            {msg.content}
-          </div>
+          <MessageItem key={i} msg={msg} />
         ))}
       </div>
       <div style={{ padding: '20px', borderTop: '1px solid #ccc', display: 'flex' }}>
