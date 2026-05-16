@@ -16,7 +16,7 @@ export interface ExpertTask {
 }
 
 export interface ExpertMessage {
-  type: 'metadata_update' | 'task_request' | 'task_response' | 'heartbeat';
+  type: 'metadata_update' | 'task_request' | 'task_response' | 'heartbeat' | 'inference_request' | 'inference_response';
   senderId: string;
   timestamp: number;
   data: any;
